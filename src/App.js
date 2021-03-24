@@ -1,4 +1,3 @@
-import "./App.css";
 import { useState, useEffect } from "react";
 
 const BOARD_SIZE = 5;
@@ -16,7 +15,9 @@ function App() {
 
   return (
     <div className="App">
-      <h4>{score}</h4>
+      <h4 style={{ textAlign: "center" }} className="mt-3">
+        Score: {score}
+      </h4>
       <Board board={board} />
       <Buttons board={board} setBoard={setBoard} />
     </div>
@@ -38,12 +39,12 @@ function Board(props) {
   let board = props.board;
   return (
     <div className="board">
-      {board.map((row) => {
+      {board.map((row, index) => {
         return (
-          <div className="row">
-            {row.map((cell, index) => {
+          <div className="row" key={index}>
+            {row.map((cell, cellIndex) => {
               return (
-                <div className="column">
+                <div className="column" key={cellIndex}>
                   <p>{cell ? cell : ""}</p>
                 </div>
               );
@@ -58,7 +59,6 @@ function Board(props) {
 function Buttons(props) {
   const buttons = Array.from(Array(3), () => new Array(3).fill(0));
 
-  let i = -1;
   buttons[0][1] = "Up";
   buttons[1][0] = "Left";
   buttons[1][2] = "Right";
@@ -93,9 +93,8 @@ function Buttons(props) {
               const mid = colIndex === 1 && index % 2 === 0;
               const upDown = colIndex % 2 === 0 && index === 1;
               if (upDown || mid) {
-                i++;
                 return (
-                  <div className="button buttonColumn" key={index}>
+                  <div className="button buttonColumn" key={cell}>
                     <button
                       type="button"
                       className={(cell, "btn btn-primary")}
@@ -106,7 +105,9 @@ function Buttons(props) {
                   </div>
                 );
               } else {
-                return <div className="notButton buttonColumn"></div>;
+                return (
+                  <div className="notButton buttonColumn" key={index}></div>
+                );
               }
             })}
           </div>
@@ -141,7 +142,7 @@ function handleClickLeft(board, setBoard) {
         newRow.push(board[i][j]);
       }
     }
-    console.log(newRow);
+
     let stillZero = new Array(board.length - newRow.length).fill(0);
     newBoard.push(newRow.concat(stillZero));
   }
@@ -173,7 +174,7 @@ function handleClickRight(board, setBoard) {
         newRow.push(board[i][j]);
       }
     }
-    console.log(newRow);
+
     let stillZero = new Array(board.length - newRow.length).fill(0);
     newRow.reverse();
     newBoard.push(stillZero.concat(newRow));
